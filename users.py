@@ -2,6 +2,7 @@ import accounts
 
 
 class User:
+
     def __init__(self, first_name, last_name, ssn='000-00-0000'):
         self.first_name = first_name.lower()
         self.last_name = last_name.lower()
@@ -20,13 +21,23 @@ class User:
 
 class Customer(User):
     is_active = False
+    credit_evaluated = False
     checking_account = False
     saving_account = False
 
-    def __init__(self, first_name, last_name, account_num=0, pin=0):
+    credit_score_dict = {
+        'A': range(830, 900),
+        'B': range(750, 830),
+        'C': range(670, 750),
+        'F': range(0, 670),
+    }
+
+    def __init__(self, first_name, last_name, account_num=0, pin=0, credit_score=None):
         super().__init__(first_name, last_name)
         self.checking_account_num = None if Customer.is_active is False else account_num
         self.pin = None if Customer.is_active is False else pin
+        self.credit_score = credit_score
+        self.credit_rating = None
 
     @property
     def customer_info(self):
@@ -34,17 +45,30 @@ class Customer(User):
 
     def create_checking(self):
         pin = int(input('Please enter a 4 digit PIN: '))
-        self.pin = print('Invalid PIN') if len(str(pin)) != 4 else pin
+        pin_confirm = int(input('Reconfirm 4 digit PIN: '))
+        self.pin = print('Invalid PIN') if len(str(pin)) != 4 or pin_confirm != self.pin else pin
         if self.pin:
             self.checking_account_num = accounts.generate_account_num()
             self.is_active = True if self.pin else False
             self.checking = accounts.CheckingAccount(self.checking_account_num, self.pin)
             print(f'Checking Account # {self.checking_account_num} created')
-            
+
     def create_saving(self):
-        self.saving_account_num = accounts.generate_account_num()
-        self.saving = accounts.SavingAccount(self.saving_account_num)
-        print(f'Saving Account # {self.saving_account_num} created')
+        if self.is_active is False:
+            print('Must create checking account first')
+        else:
+            self.saving_account_num = accounts.generate_account_num()
+            self.saving = accounts.SavingAccount(self.saving_account_num)
+            print(f'Saving Account # {self.saving_account_num} created')
+
+    def get_credit_rating(self, credit_score):
+        self.credit_score = credit_score
+        for rating, score in self.credit_score_dict.items():
+            if credit_score in score:
+                self.credit_rating = rating
+                self.credit_evaluated = True
+                print(f'Rating of {self.credit_rating}')
+
 
 class Employee(User):
     is_active = False

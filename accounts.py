@@ -50,6 +50,14 @@ class SavingAccount(Account):
             self.checking_balance += amount
 
 
+class CreditCardAccount(Account):
+    remaining_limit = 0
+
+    def __init__(self, account_number):
+        super().__init__(account_number)
+
+
+
 def generate_account_num():
     """Generates an eleven digit account number
 
