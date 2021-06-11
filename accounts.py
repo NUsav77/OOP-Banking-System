@@ -1,17 +1,53 @@
 import random
-import users
 
 
-class Account(users.Customer):
-    def __init__(self, account_number, first_name, last_name):
-        super().__init__(first_name, last_name)
+class Account:
+
+    def __init__(self, account_number):
         self.account_number = account_number
 
 
 class CheckingAccount(Account):
-    def __init__(self, account_number, balance):
+    checking_balance = 0
+
+    def __init__(self, account_number, pin):
         super().__init__(account_number)
-        users.Customer.balance = balance
+        self.pin = pin
+        self.saving_balance = None
+
+    def deposit(self, amount):
+        self.checking_balance += amount
+
+    def withdraw(self, pin, amount):
+        if pin == self.pin:
+            self.checking_balance -= print('Insufficient funds') if amount > self.checking_balance else amount
+        else:
+            print('Invalid PIN')
+
+    def transfer_to_saving(self, amount):
+        if amount > self.checking_balance:
+            print('Insufficient funds')
+        else:
+            self.saving_balance += amount
+            self.checking_balance -= amount
+
+
+class SavingAccount(Account):
+    saving_balance = 0
+
+    def __init__(self, account_number):
+        super().__init__(account_number)
+        self.checking_balance = None
+
+    def deposit(self, amount):
+        self.saving_balance += amount
+
+    def transfer_to_checking(self, amount):
+        if amount > self.saving_balance:
+            print('Insufficient funds')
+        else:
+            self.saving_balance -= amount
+            self.checking_balance += amount
 
 
 def generate_account_num():

@@ -20,24 +20,31 @@ class User:
 
 class Customer(User):
     is_active = False
+    checking_account = False
+    saving_account = False
 
     def __init__(self, first_name, last_name, account_num=0, pin=0):
         super().__init__(first_name, last_name)
-        self.account_num = None if Customer.is_active is False else account_num
+        self.checking_account_num = None if Customer.is_active is False else account_num
         self.pin = None if Customer.is_active is False else pin
 
     @property
     def customer_info(self):
-        return f'{self.fullname}\nAccount # {self.account_num}'
+        return f'{self.fullname}\nAccount # {self.checking_account_num}'
 
-    def create_account(self):
-        pin = input('Please enter a 4 digit PIN: ')
-        self.pin = print('Invalid PIN') if len(str(pin)) != 4 or pin.isnumeric() is False else pin
+    def create_checking(self):
+        pin = int(input('Please enter a 4 digit PIN: '))
+        self.pin = print('Invalid PIN') if len(str(pin)) != 4 else pin
         if self.pin:
-            self.account_num = accounts.generate_account_num()
+            self.checking_account_num = accounts.generate_account_num()
             self.is_active = True if self.pin else False
-            print(f'Account # {self.account_num} created')
-
+            self.checking = accounts.CheckingAccount(self.checking_account_num, self.pin)
+            print(f'Checking Account # {self.checking_account_num} created')
+            
+    def create_saving(self):
+        self.saving_account_num = accounts.generate_account_num()
+        self.saving = accounts.SavingAccount(self.saving_account_num)
+        print(f'Saving Account # {self.saving_account_num} created')
 
 class Employee(User):
     is_active = False
