@@ -8,54 +8,56 @@ class Account:
 
 
 class CheckingAccount(Account):
-    checking_balance = 0
+    balance = 0
 
     def __init__(self, account_number, pin):
         super().__init__(account_number)
+        self.SavingAccount = SavingAccount
         self.pin = pin
-        self.saving_balance = None
+
 
     def deposit(self, amount):
-        self.checking_balance += amount
+        self.balance += amount
 
     def withdraw(self, pin, amount):
         if pin == self.pin:
-            self.checking_balance -= print('Insufficient funds') if amount > self.checking_balance else amount
+            self.balance -= print('Insufficient funds') if amount > self.balance else amount
         else:
             print('Invalid PIN')
 
     def transfer_to_saving(self, amount):
-        if amount > self.checking_balance:
+        if amount > self.balance:
             print('Insufficient funds')
         else:
-            self.saving_balance += amount
-            self.checking_balance -= amount
+            self.SavingAccount.balance += amount
+            self.balance -= amount
 
 
 class SavingAccount(Account):
-    saving_balance = 0
+    balance = 0
 
     def __init__(self, account_number):
         super().__init__(account_number)
-        self.checking_balance = None
+        self.CheckingAccount = CheckingAccount
 
     def deposit(self, amount):
-        self.saving_balance += amount
+        self.balance += amount
 
     def transfer_to_checking(self, amount):
-        if amount > self.saving_balance:
+        if amount > self.balance:
             print('Insufficient funds')
         else:
-            self.saving_balance -= amount
-            self.checking_balance += amount
+            self.balance -= amount
+            self.CheckingAccount.balance += amount
 
 
 class CreditCardAccount(Account):
     remaining_limit = 0
+    rating_to_apr = {'A': 0.5, 'B': 2.5, 'C': 5.0, 'F': None}
 
-    def __init__(self, account_number):
+    def __init__(self, account_number, credit_rating):
         super().__init__(account_number)
-
+        self.card_apr = CreditCardAccount.rating_to_apr.get(credit_rating)
 
 
 def generate_account_num():

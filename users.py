@@ -22,8 +22,9 @@ class User:
 class Customer(User):
     is_active = False
     credit_evaluated = False
-    checking_account = False
-    saving_account = False
+    has_checking_account = False
+    has_saving_account = False
+    has_credit_card = False
 
     credit_score_dict = {
         'A': range(830, 900),
@@ -46,10 +47,11 @@ class Customer(User):
     def create_checking(self):
         pin = int(input('Please enter a 4 digit PIN: '))
         pin_confirm = int(input('Reconfirm 4 digit PIN: '))
-        self.pin = print('Invalid PIN') if len(str(pin)) != 4 or pin_confirm != self.pin else pin
+        self.pin = print('Invalid PIN') if len(str(pin)) != 4 or pin_confirm != pin else pin
         if self.pin:
             self.checking_account_num = accounts.generate_account_num()
             self.is_active = True if self.pin else False
+            self.has_checking_account = True if self.pin else False
             self.checking = accounts.CheckingAccount(self.checking_account_num, self.pin)
             print(f'Checking Account # {self.checking_account_num} created')
 
@@ -61,6 +63,9 @@ class Customer(User):
             self.saving = accounts.SavingAccount(self.saving_account_num)
             print(f'Saving Account # {self.saving_account_num} created')
 
+    def saving_balance(self):
+        return self.saving_balance
+
     def get_credit_rating(self, credit_score):
         self.credit_score = credit_score
         for rating, score in self.credit_score_dict.items():
@@ -68,6 +73,20 @@ class Customer(User):
                 self.credit_rating = rating
                 self.credit_evaluated = True
                 print(f'Rating of {self.credit_rating}')
+
+    def create_credit_card(self):
+        if self.credit_evaluated is False:
+            print('Must get credit rating first')
+        elif self.has_checking_account is False:
+            print('Must have a checking account to apply for a credit card')
+        else:
+            self.credit_card_num = accounts.generate_account_num()
+            self.has_credit_card = True
+            self.credit_card = accounts.CreditCardAccount(self.credit_card_num, self.credit_rating)
+            print(f'Credit card approved\n\tCard # {self.credit_card_num}\n\tAPR rating: {self.card_apr}')
+
+    def card_apr(self):
+        return self.card_apr
 
 
 class Employee(User):
