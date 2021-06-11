@@ -1,5 +1,7 @@
 import random
 
+from users import Customer
+
 
 class Account:
 
@@ -8,6 +10,7 @@ class Account:
 
 
 class CheckingAccount(Account):
+    has_checking = False
     balance = 0
 
     def __init__(self, account_number, pin):
@@ -15,9 +18,10 @@ class CheckingAccount(Account):
         self.SavingAccount = SavingAccount
         self.pin = pin
 
-
     def deposit(self, amount):
+        old_bal = self.balance
         self.balance += amount
+        print(f'Previous Balance: ${old_bal}\nDeposit amount: ${amount}\nNew Balance: ${self.balance}')
 
     def withdraw(self, pin, amount):
         if pin == self.pin:
@@ -26,7 +30,9 @@ class CheckingAccount(Account):
             print('Invalid PIN')
 
     def transfer_to_saving(self, amount):
-        if amount > self.balance:
+        if self.SavingAccount.has_saving is False:
+            print('Must create a saving account')
+        elif amount > self.balance:
             print('Insufficient funds')
         else:
             self.SavingAccount.balance += amount
@@ -35,10 +41,12 @@ class CheckingAccount(Account):
 
 class SavingAccount(Account):
     balance = 0
+    has_saving = False
 
     def __init__(self, account_number):
         super().__init__(account_number)
         self.CheckingAccount = CheckingAccount
+        self.has_saving = True
 
     def deposit(self, amount):
         self.balance += amount

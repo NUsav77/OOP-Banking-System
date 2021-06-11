@@ -56,15 +56,13 @@ class Customer(User):
             print(f'Checking Account # {self.checking_account_num} created')
 
     def create_saving(self):
-        if self.is_active is False:
+        if self.has_checking_account is False:
             print('Must create checking account first')
         else:
             self.saving_account_num = accounts.generate_account_num()
             self.saving = accounts.SavingAccount(self.saving_account_num)
+            self.has_saving_account = True
             print(f'Saving Account # {self.saving_account_num} created')
-
-    def saving_balance(self):
-        return self.saving_balance
 
     def get_credit_rating(self, credit_score):
         self.credit_score = credit_score
