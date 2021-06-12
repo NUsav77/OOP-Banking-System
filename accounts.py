@@ -1,7 +1,5 @@
 import random
 
-from users import Customer
-
 
 class Account:
 
@@ -10,12 +8,11 @@ class Account:
 
 
 class CheckingAccount(Account):
-    has_checking = False
     balance = 0
 
     def __init__(self, account_number, pin):
         super().__init__(account_number)
-        self.SavingAccount = SavingAccount
+        self.saving_account = None
         self.pin = pin
 
     def deposit(self, amount):
@@ -30,42 +27,68 @@ class CheckingAccount(Account):
             print('Invalid PIN')
 
     def transfer_to_saving(self, amount):
-        if self.SavingAccount.has_saving is False:
+        if not isinstance(self.saving_account, SavingAccount):
             print('Must create a saving account')
         elif amount > self.balance:
             print('Insufficient funds')
         else:
-            self.SavingAccount.balance += amount
+            self.saving_account.balance += amount
             self.balance -= amount
 
 
 class SavingAccount(Account):
     balance = 0
-    has_saving = False
 
     def __init__(self, account_number):
         super().__init__(account_number)
-        self.CheckingAccount = CheckingAccount
-        self.has_saving = True
+        self.checking_account = None
 
     def deposit(self, amount):
         self.balance += amount
 
     def transfer_to_checking(self, amount):
-        if amount > self.balance:
-            print('Insufficient funds')
-        else:
-            self.balance -= amount
-            self.CheckingAccount.balance += amount
+        try:
+            if amount > self.balance:
+                print('Insufficient funds')
+            else:
+                self.balance -= amount
+                self.checking_account.balance += amount
+        except NameError:
+            print('Invalid input')
+        except TypeError:
+            print('Must pass integer')
 
 
 class CreditCardAccount(Account):
     remaining_limit = 0
-    rating_to_apr = {'A': 0.5, 'B': 2.5, 'C': 5.0, 'F': None}
+    rating_to_apr = {'A': 2.5, 'B': 5.25, 'C': 15.0, 'F': None}
+    card_apr = None
 
     def __init__(self, account_number, credit_rating):
         super().__init__(account_number)
-        self.card_apr = CreditCardAccount.rating_to_apr.get(credit_rating)
+        CreditCardAccount.card_apr = CreditCardAccount.rating_to_apr[credit_rating]
+
+
+class LoanAccount(Account):
+    remaining_balance = 0
+    rating_to_apr = {'A': 0.5,
+                     'B': 2.5,
+                     'C': 5.0,
+                     'F': None}
+    loan_apr = None
+    loan_amount = None
+
+    def __init__(self, account_number, credit_rating):
+        super().__init__(account_number)
+        self.loan_amount = self.get_loan_amount(credit_rating)
+        self.loan_apr = LoanAccount.rating_to_apr[credit_rating]
+
+
+    def get_loan_amount(self, apr):
+        apr_to_amount = {'A': 100000,
+                         'B': 50000,
+                         'C': 25000}
+        return apr_to_amount[apr]
 
 
 def generate_account_num():
