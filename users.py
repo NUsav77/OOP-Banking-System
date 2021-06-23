@@ -1,5 +1,10 @@
 import accounts
+import mysql.connector
+import secrets
 
+cnx = mysql.connector.connect(user='admin', password=secrets.my_sql_password,
+                              host='127.0.0.1',
+                              database='bank_mini_project')
 
 class User:
 
@@ -48,7 +53,7 @@ class Customer(User):
     def create_checking(self):
         pin = int(input('Please enter a 4 digit PIN: '))
         pin_confirm = int(input('Reconfirm 4 digit PIN: '))
-        self.pin = print('Invalid PIN') if len(str(pin)) != 4 or pin_confirm != pin else pin
+        self.pin = print('Invalid PIN') if len(str(pin)) != 4 | pin != pin_confirm else pin
         if self.pin:
             self.checking_account_num = accounts.generate_account_num()
             self.is_active = True if self.pin else False
