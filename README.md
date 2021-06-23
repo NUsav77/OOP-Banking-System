@@ -1,6 +1,6 @@
 # Mini Bank Object-Oriented Programming Project
 
-An object-oriented program focused on replicating a simple version of a banking system. The program uses two .py files, accounts.py and users.py. 
+An object-oriented program focused on replicating a simple version of a banking system. The program uses two .py files, accounts.py and users.py. The program uses a MySQL database implemented with mysql-connector module.
 
 Parent class User initializes the first and last name of the user, along with an optional social-security number. Users child classes Customer and Employee allow creation of Customers and Employee, as well as provide respective attributes and methods which mirror real-life banking systems.
 

@@ -2,9 +2,22 @@ import accounts
 import mysql.connector
 import secrets
 
-cnx = mysql.connector.connect(user='admin', password=secrets.my_sql_password,
-                              host='127.0.0.1',
-                              database='bank_mini_project')
+# Connect to local MySQL server / bank_mini_project database
+bank_db = mysql.connector.connect(user='admin',
+                                  password=secrets.my_sql_password,
+                                  host='127.0.0.1',
+                                  database='bank_mini_project')
+
+mycursor = bank_db.cursor()
+mycursor.execute('show databases')
+
+# for i in mycursor:
+#     print(i)
+
+result = mycursor.fetchall()
+
+for i in result:
+    print(i)
 
 class User:
 
@@ -62,7 +75,7 @@ class Customer(User):
             print(f'Checking Account # {self.checking_account_num} created')
 
     def create_saving(self):
-        if not isinstance(self.checking, accounts.CheckingAccount): # self.has_checking_account is False:
+        if not isinstance(self.checking, accounts.CheckingAccount):  # self.has_checking_account is False:
             print('Must create checking account first')
         else:
             self.saving_account_num = accounts.generate_account_num()
@@ -101,7 +114,8 @@ class Customer(User):
         else:
             self.loan_num = accounts.generate_account_num()
             self.loan = accounts.LoanAccount(self.loan_num, self.credit_rating)
-            print(f'Load approved\n\tLoan Account # {self.loan_num}\n\tAPR: {self.loan.loan_apr}%\n\tTotal Loan Amount: ${self.loan.loan_amount}')
+            print(
+                f'Load approved\n\tLoan Account # {self.loan_num}\n\tAPR: {self.loan.loan_apr}%\n\tTotal Loan Amount: ${self.loan.loan_amount}')
 
 
 class Employee(User):
@@ -119,5 +133,5 @@ class Employee(User):
         return f'{self.fullname}/nEmployee ID # {self.employee_id}'
 
 
-steven = Customer('steven', 'nodalo')
-steven.create_checking()
+# steven = Customer('steven', 'nodalo')
+# steven.create_checking()
