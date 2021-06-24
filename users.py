@@ -8,23 +8,29 @@ bank_db = mysql.connector.connect(user='admin',
                                   host='127.0.0.1',
                                   database='bank_mini_project')
 
-mycursor = bank_db.cursor()
-mycursor.execute('show databases')
+mycursor = bank_db.cursor(buffered=True)
+# mycursor.execute('show databases')
+
 
 # for i in mycursor:
 #     print(i)
 
-result = mycursor.fetchall()
-
-for i in result:
-    print(i)
+# result = mycursor.fetchall()
+#
+# for i in result:
+#     print(i)
 
 class User:
 
-    def __init__(self, first_name, last_name, ssn='000-00-0000'):
+    def __init__(self, first_name, last_name, ssn=000000000):
         self.first_name = first_name.lower()
         self.last_name = last_name.lower()
-        self.ssn = [print('invalid ssn') if len(ssn.replace('-', '')) != 9 else ssn]
+        self.ssn = [print('invalid ssn') if len(str(ssn)) != 9 else ssn]
+        query = f'INSERT INTO Users (firstname) VALUES {self.first_name}'
+        # mycursor.executemany('INSERT INTO User (firstname, lastname, ssn) VALUES (%s,%s,%s)',
+        #                  (self.first_name, self.last_name, self.ssn))
+        mycursor.executemany(query, list)
+        bank_db.commit()
 
     @property
     def fullname(self):
@@ -133,5 +139,5 @@ class Employee(User):
         return f'{self.fullname}/nEmployee ID # {self.employee_id}'
 
 
-# steven = Customer('steven', 'nodalo')
-# steven.create_checking()
+pa = Customer('pa', 'xiong', 589565413)
+pa.create_checking()
